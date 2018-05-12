@@ -1,29 +1,33 @@
 Option Explicit
-'On Error Resume Next
 
-Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched
+Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
 Dim objShl : Set objShl = CreateObject("Shell.Application")
 Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
 
-strRegValue = objShell.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 268910\InstallLocation")
-If len(strRegValue) = 0 Then
-    objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually",0,17)
+On Error Resume Next
+strRegValue = objWshShl.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 268910\InstallLocation")
+
+If len(strRegValue) = 0 or Err.Number <> 0 Then
+	On Error GoTo 0
+    Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually.",0,17)
     
-    If objFolder Is Nothing Then
+    If objFolder is Nothing Then
         Wscript.Quit()
     Else
         strCupheadDir = objFolder.Self.Path
     End If
+Else
+    strCupheadDir = strRegValue
 End If
 
-intOKCancel = MsgBox("Click OK to patch Cuphead to: " & vbCrLf & vbCrLf & strTemp, vbOKCancel, "CupCore Patcher")
+intOKCancel = MsgBox("Click OK to patch Cuphead to: " & vbCrLf & vbCrLf & strCupheadDir, vbOKCancel, "CupCore Patcher")
 
 if intOKCancel = 2 Then
     WScript.Quit()
 End If
 
-strCupheadDataDir = strTemp & "\Cuphead_Data\"
+strCupheadDataDir = strCupheadDir & "\Cuphead_Data\"
 
 ' Patching array
 arrPatches = Array(Array("Managed\", "Assembly-CSharp.dll"))
