@@ -1,6 +1,10 @@
 Option Explicit
 
+<<<<<<< HEAD
+Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel, file
+=======
 Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel
+>>>>>>> master
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
 Dim objShl : Set objShl = CreateObject("Shell.Application")
 Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
@@ -9,17 +13,26 @@ On Error Resume Next
 strRegValue = objWshShl.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 268910\InstallLocation")
 
 If len(strRegValue) = 0 or Err.Number <> 0 Then
+<<<<<<< HEAD
+=======
 	On Error GoTo 0
+>>>>>>> master
     Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually.",0,17)
     
     If objFolder is Nothing Then
         Wscript.Quit()
     Else
-        strCupheadDir = objFolder.Self.Path
+        If Not objFso.FolderExists(objFolder.Self.Path & "\\Cuphead_Data\") Then
+            MsgBox "Cuphead_Data not found!", 16, "CupCore Patcher Error"
+            WScript.Quit()
+        Else
+            strCupheadDir = objFolder.Self.Path
+        End If
     End If
 Else
     strCupheadDir = strRegValue
 End If
+On Error GoTo 0
 
 intOKCancel = MsgBox("Click OK to patch Cuphead to: " & vbCrLf & vbCrLf & strCupheadDir, vbOKCancel, "CupCore Patcher")
 
