@@ -1,5 +1,11 @@
 Option Explicit
 
+If WScript.Arguments.length = 0 Then
+        CreateObject("Shell.Application").ShellExecute "wscript.exe", """" & _
+        WScript.ScriptFullName & """" & " RunAsAdministrator",,"runas", 1
+        WScript.Quit
+End If
+
 Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel, file, BinaryData, strMD5
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
 Dim objShl : Set objShl = CreateObject("Shell.Application")
