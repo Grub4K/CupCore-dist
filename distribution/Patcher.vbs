@@ -1,9 +1,9 @@
 Option Explicit
 
-If WScript.Arguments.length = 0 Then
-        CreateObject("Shell.Application").ShellExecute "wscript.exe", """" & _
-        WScript.ScriptFullName & """" & " RunAsAdministrator",,"runas", 1
-        WScript.Quit
+If Not WScript.Arguments.Named.Exists("elevate") Then
+    CreateObject("Shell.Application").ShellExecute WScript.FullName _
+      , """" & WScript.ScriptFullName & """ /elevate", "", "runas", 1
+    WScript.Quit
 End If
 
 Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel, file, BinaryData, strMD5
@@ -15,13 +15,14 @@ Dim objStream : Set objStream = CreateObject("ADODB.Stream")
 Dim objXML : Set objXML = CreateObject("MSXML2.DOMDocument")
 Dim objElement : Set objElement = objXML.CreateElement("tmp")
 
+' Find Cuphead location.
+' If cannot find, let select manually
 On Error Resume Next
 strRegValue = objWshShl.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 268910\InstallLocation")
 On Error GoTo 0
-
 If len(strRegValue) = 0 or Err.Number <> 0 Then
     Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually.",0,17)
-    
+
     If objFolder is Nothing Then
         Wscript.Quit()
     Else
@@ -35,47 +36,42 @@ If len(strRegValue) = 0 or Err.Number <> 0 Then
 Else
     strCupheadDir = strRegValue
 End If
-
 strCupheadDataDir = strCupheadDir & "\Cuphead_Data\"
+' Got location
 
-If Not objFso.FileExists(strCupheadDataDir & "Managed\Assembly-CSharp.dll") Then
-	MsgBox "Assembly-CSharp.dll not found!", 16, "CupCore Patcher Error"
-	WScript.Quit()
+' Check for Current Patch (not working for now)
+If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadDataDir & "Managed\Assembly-CSharp.dll") Then
+    patcherError "Cuphead Current Patch detected! Please install the LEGACY version."
 End If
 
-
-If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadDataDir & "Managed\Assembly-CSharp.dll") = True Then 
-	MsgBox "Cuphead Current Patch detected! Please install the LEGACY version.", 16, "CupCore Patcher Error"
-	WScript.Quit()
-	
-ElseIf verifyMd5("dc51ec25ceb570b88afc6df0ca1601a1", strCupheadDataDir & "Managed\Assembly-CSharp.dll") = False Then 
-	MsgBox "Invalid Cuphead Data Files! Please re-install the legacy version of Cuphead.", 16, "CupCore Patcher Error"
-	WScript.Quit()
-End If	
-
+' Last check before patching
 intOKCancel = MsgBox("Click OK to patch Cuphead to: " & vbCrLf & vbCrLf & strCupheadDir, vbOKCancel, "CupCore Patcher")
-
 if intOKCancel = 2 Then
     WScript.Quit()
 End If
 
 ' Patching array
-arrPatches = Array(Array("Managed\", "Assembly-CSharp.dll"))
+arrPatches = Array(_
+    Array("Managed\", "Assembly-CSharp.dll"),_
+    Array("", "sharedassets1.assets"),_
+    Array("", "sharedassets3.assets"),_
+    Array("", "sharedassets10.assets") _
+)
 
-'
 ' Patching gets done here
-'
 for each file in arrPatches
     CurrentPatch = strCupheadDataDir & file(0) & file(1)
-    
-    If (objFso.FileExists(CurrentPatch & ".temp")) Then
+    ' If .bak was found we are unpatching
+    If (objFso.FileExists(CurrentPatch & ".bak")) Then
         blnUnpatched = True
         objFso.DeleteFile CurrentPatch
-        objFso.MoveFile CurrentPatch & ".temp", CurrentPatch
-    Else
-        objFso.MoveFile CurrentPatch, CurrentPatch & ".temp"
-        objWshShl.Run "xdelta3 -d -s """ & CurrentPatch & ".temp"" " & file(1) & ".xdelta """ & CurrentPatch & """", 0, True
+        objFso.MoveFile CurrentPatch & ".bak", CurrentPatch
+    ElseIf (objFso.FileExists(CurrentPatch)) Then
+        objFso.MoveFile CurrentPatch, CurrentPatch & ".bak"
+        objWshShl.Run "xdelta3 -d -s """ & CurrentPatch & ".bak"" " & file(1) & ".xdelta """ & CurrentPatch & """", 0, True
     	blnUnpatched = False
+    Else
+        patcherError """" & file(1) & """ not found"
     End If
 Next
 ' Done patching
@@ -87,6 +83,12 @@ Else
 End If
 
 
+Function patcherError(message)
+    MsgBox message, 16, "CupCore Patcher Error"
+    WScript.Quit()
+End Function
+
+
 Function verifyMd5(hash, filepath)
 	' get binary data
 	objStream.Type = 1
@@ -94,18 +96,14 @@ Function verifyMd5(hash, filepath)
     objStream.LoadFromFile filepath
     BinaryData = objStream.Read
     objStream.Close
-    
+
     ' generate hash
     objMD5.ComputeHash_2(BinaryData)
-    
+
     objElement.DataType = "bin.hex"
     objElement.NodeTypedValue = objMD5.Hash
     strMD5 = objElement.text
-    
+
     ' return if hash matches
-    If strMD5 <> hash Then
-    	verifyMd5 = False
-    Else
-    	verifyMd5 = True
-    End If
+    verifyMd5 = (strMD5 = hash)
 End Function
