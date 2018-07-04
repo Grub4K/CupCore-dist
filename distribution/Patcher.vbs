@@ -6,7 +6,7 @@ If Not WScript.Arguments.Named.Exists("elevate") Then
     WScript.Quit
 End If
 
-Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatched, intOKCancel, file, BinaryData, strMD5
+Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatching, strPatchMessage, intOKCancel, file, BinaryData, strMD5
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
 Dim objShl : Set objShl = CreateObject("Shell.Application")
 Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
@@ -27,8 +27,7 @@ If len(strRegValue) = 0 or Err.Number <> 0 Then
         Wscript.Quit()
     Else
         If Not objFso.FolderExists(objFolder.Self.Path & "\Cuphead_Data\") Then
-            MsgBox "Cuphead_Data not found!", 16, "CupCore Patcher Error"
-            WScript.Quit()
+            patcherError "Cuphead_Data not found!"
         Else
             strCupheadDir = objFolder.Self.Path
         End If
@@ -39,10 +38,6 @@ End If
 strCupheadDataDir = strCupheadDir & "\Cuphead_Data\"
 ' Got location
 
-' Check for Current Patch
-If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadDataDir & "Managed\Assembly-CSharp.dll") Then
-    patcherError "Cuphead Current Patch detected! Please install the LEGACY version."
-End If
 
 
 ' Patching array
@@ -56,14 +51,42 @@ arrPatches = Array(_
 If (NOT objFso.FileExists("data\xdelta3.exe")) Then
     patcherError "Could not locate xdelta3"
 End If
+' Check Assembly-CSharp.dll as significant file
+If ( objFso.FileExists(strCupheadDataDir & "Managed\Assembly-CSharp.dll" & ".bak") ) Then
+    blnUnpatching = True
+    strPatchMessage = "un"
+ElseIf ( objFso.FileExists(strCupheadDataDir & "Managed\Assembly-CSharp.dll") ) Then
+    ' Check for Current Patch
+    If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadDataDir & "Managed\Assembly-CSharp.dll") Then
+        patcherError "Cuphead Current Patch detected! Please install the LEGACY version."
+    End If
+    blnUnpatching = False
+    strPatchMessage = ""
+Else
+    patcherError "Could not locate ""Assembly-CSharp.dll""" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+End If
+
+' Check for files
 For each file in arrPatches
-    If (NOT objFso.FileExists("data\" & file(1) & ".xdelta")) Then
+    ' Check delta files
+    If NOT objFso.FileExists("data\" & file(1) & ".xdelta") Then
         patcherError "Could not locate """ & file(1) & ".xdelta"""
+    End If
+    ' Check Cuphead files
+    CurrentPatch = strCupheadDataDir & file(0) & file(1)
+    If blnUnpatching Then
+        If NOT objFso.FileExists(CurrentPatch & ".bak") Then
+            patcherError "Could not locate """ & file(1) & ".bak""" & vbCrLf & "Patching cannot be reverted" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+        End If
+    Else
+        If NOT objFso.FileExists(CurrentPatch) Then
+            patcherError "Could not locate """ & file(1) & """" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+        End If
     End If
 Next
 
 ' Last check before patching
-intOKCancel = MsgBox("Click OK to patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
+intOKCancel = MsgBox("Click OK to " & strPatchMessage & "patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
 if intOKCancel = 2 Then
     WScript.Quit()
 End If
@@ -72,26 +95,20 @@ End If
 for each file in arrPatches
     CurrentPatch = strCupheadDataDir & file(0) & file(1)
     ' If .bak was found we are unpatching
-    If (objFso.FileExists(CurrentPatch & ".bak")) Then
-        blnUnpatched = True
+    If blnUnpatching Then
         objFso.DeleteFile CurrentPatch
         objFso.MoveFile CurrentPatch & ".bak", CurrentPatch
-    ElseIf (objFso.FileExists(CurrentPatch)) Then
+    Else
         objFso.MoveFile CurrentPatch, CurrentPatch & ".bak"
         objWshShl.Run "data\xdelta3 -d -s """ & CurrentPatch & ".bak"" ""data\" & file(1) & ".xdelta"" """ & CurrentPatch & """", 0, True
-    	blnUnpatched = False
-    Else
-        patcherError """" & file(1) & """ not found"
     End If
 Next
 ' Done patching
 
-if blnUnpatched = True Then
-    MsgBox "Safely unpached", 32, "CupCore Patcher"
-Else
-    MsgBox "Files patched successfully", 32, "CupCore Patcher"
-End If
-
+MsgBox "Files " & strPatchMessage & "patched successfully", 32, "CupCore Patcher"
+' Patcher End
+WScript.Quit
+''''''''''''
 
 Function patcherError(message)
     MsgBox message, 16, "CupCore Patcher Error"
