@@ -87,11 +87,10 @@ For each file in arrPatches
     End If
 Next
 
-strSaveLocation = objWshShl.ExpandEnvironmentStrings("%APPDATA%") & "\Cuphead\"
-If NOT (objFso.FolderExists(strSaveLocation)) Then
-    patcherError "Could not locate Cuphead save files"
-End If
-WScript.Quit
+'strSaveLocation = objWshShl.ExpandEnvironmentStrings("%APPDATA%") & "\Cuphead\"
+'If NOT (objFso.FolderExists(strSaveLocation)) Then
+'    patcherError "Could not locate Cuphead save files"
+'End If
 
 ' Last check before patching
 intOKCancel = MsgBox("Click OK to " & strPatchMessage & "patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
