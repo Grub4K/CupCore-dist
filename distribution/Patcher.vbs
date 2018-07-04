@@ -6,7 +6,7 @@ If Not WScript.Arguments.Named.Exists("elevate") Then
     WScript.Quit
 End If
 
-Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatching, strPatchMessage, intOKCancel, file, BinaryData, strMD5
+Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir, arrPatches, CurrentPatch, blnUnpatching, strPatchMessage, strSaveLocation, intOKCancel, file, BinaryData, strMD5
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
 Dim objShl : Set objShl = CreateObject("Shell.Application")
 Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
@@ -14,6 +14,8 @@ Dim objMD5:  Set objMD5 = CreateObject("System.Security.Cryptography.MD5CryptoSe
 Dim objStream : Set objStream = CreateObject("ADODB.Stream")
 Dim objXML : Set objXML = CreateObject("MSXML2.DOMDocument")
 Dim objElement : Set objElement = objXML.CreateElement("tmp")
+' Chenge current directory hotfix
+objWshShl.CurrentDirectory = objFso.GetParentFolderName(WScript.ScriptFullName)
 
 ' Find Cuphead location.
 ' If cannot find, let select manually
@@ -85,6 +87,12 @@ For each file in arrPatches
     End If
 Next
 
+strSaveLocation = objWshShl.ExpandEnvironmentStrings("%APPDATA%") & "\Cuphead\"
+If NOT (objFso.FolderExists(strSaveLocation)) Then
+    patcherError "Could not locate Cuphead save files"
+End If
+WScript.Quit
+
 ' Last check before patching
 intOKCancel = MsgBox("Click OK to " & strPatchMessage & "patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
 if intOKCancel = 2 Then
@@ -103,6 +111,9 @@ for each file in arrPatches
         objWshShl.Run "data\xdelta3 -d -s """ & CurrentPatch & ".bak"" ""data\" & file(1) & ".xdelta"" """ & CurrentPatch & """", 0, True
     End If
 Next
+' Backup save files
+' Will be added in full release
+
 ' Done patching
 
 MsgBox "Files " & strPatchMessage & "patched successfully", 32, "CupCore Patcher"
