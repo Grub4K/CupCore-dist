@@ -1,25 +1,17 @@
 # CupCore
-
 A re-implementation of the Cuphead expert mode with all-new content.
 
----
+## Installation / Uninstallation
+- Extract the release .zip file if you haven't already
+- From the extracted files run `Patcher.vbs`
+- If the patcher cannot find the Cuphead directory, select it manually
+- Hit OK on the confirmation dialogue
+  - The Patcher window will vanish for the patching time
+  - If CupCore is installed it will remove it instead
+- A message will inform you when patching is done
 
-![logo](https://i.imgur.com/N9Wy7MF.png)
+## Bug report
+If you find a bug, please report it [here](https://github.com/Grub4K/CupCore-dist/issues)
 
----
-
-## Installation
-
----
-
-## Uninstallation
-
-To Uninstall the mod simply verify game integrity. This can be done on [Steam](https://www.youtube.com/watch?v=UC1uPtCucOs) or on [GOG](https://www.reddit.com/r/witcher/comments/40wtj3/how_do_i_verify_integrity_of_witcher_3_on_gog/).
-
----
-
-### License
-
-**CupCore** is licensed under the GNU General Public License version 3.
-
----
+## License
+**CupCore** is licensed under the GNU General Public License v3.0
