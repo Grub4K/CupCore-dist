@@ -39,16 +39,11 @@ End If
 strCupheadDataDir = strCupheadDir & "\Cuphead_Data\"
 ' Got location
 
-' Check for Current Patch (not working for now)
+' Check for Current Patch
 If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadDataDir & "Managed\Assembly-CSharp.dll") Then
     patcherError "Cuphead Current Patch detected! Please install the LEGACY version."
 End If
 
-' Last check before patching
-intOKCancel = MsgBox("Click OK to patch Cuphead to: " & vbCrLf & vbCrLf & strCupheadDir, vbOKCancel, "CupCore Patcher")
-if intOKCancel = 2 Then
-    WScript.Quit()
-End If
 
 ' Patching array
 arrPatches = Array(_
@@ -57,6 +52,21 @@ arrPatches = Array(_
     Array("", "sharedassets3.assets"),_
     Array("", "sharedassets10.assets") _
 )
+
+If (NOT objFso.FileExists("data\xdelta3.exe")) Then
+    patcherError "Could not locate xdelta3"
+End If
+For each file in arrPatches
+    If (NOT objFso.FileExists("data\" & file(1) & ".xdelta")) Then
+        patcherError "Could not locate """ & file(1) & ".xdelta"""
+    End If
+Next
+
+' Last check before patching
+intOKCancel = MsgBox("Click OK to patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
+if intOKCancel = 2 Then
+    WScript.Quit()
+End If
 
 ' Patching gets done here
 for each file in arrPatches
@@ -68,7 +78,7 @@ for each file in arrPatches
         objFso.MoveFile CurrentPatch & ".bak", CurrentPatch
     ElseIf (objFso.FileExists(CurrentPatch)) Then
         objFso.MoveFile CurrentPatch, CurrentPatch & ".bak"
-        objWshShl.Run "xdelta3 -d -s """ & CurrentPatch & ".bak"" " & file(1) & ".xdelta """ & CurrentPatch & """", 0, True
+        objWshShl.Run "data\xdelta3 -d -s """ & CurrentPatch & ".bak"" ""data\" & file(1) & ".xdelta"" """ & CurrentPatch & """", 0, True
     	blnUnpatched = False
     Else
         patcherError """" & file(1) & """ not found"
