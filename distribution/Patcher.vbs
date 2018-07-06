@@ -136,18 +136,40 @@ Next
 If objFso.FolderExists(strSaveLocation) Then
     For each file in arrSaveFiles
         strSaveFile = strSaveLocation & file
-        ' Rename .sav to backups
-        If objFso.FileExists(strSaveFile) Then
-            objFso.MoveFile strSaveFile, strSaveFile & arrSaveEndings(0)
+        If (blnUnpatching) Then
+            If objFso.FileExists(strSaveFile) Then
+                objFso.DeleteFile strSaveFile
+            End If
+            If objFso.FileExists(strSaveFile & ".bak") Then
+                objFso.MoveFile strSaveFile & ".bak", strSaveFile
+            End If
+        Else
+            If objFso.FileExists(strSaveFile) Then
+                objFso.CopyFile strSaveFile, strSaveFile & ".bak"
+            End If
         End If
         ' Rename backups to .sav
-        If objFso.FileExists(strSaveFile & arrSaveEndings(1)) Then
-            objFso.MoveFile strSaveFile & arrSaveEndings(1), strSaveFile
-        End If
     Next
 Else
     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
 End If
+'''''''''
+' Old code
+' If objFso.FolderExists(strSaveLocation) Then
+'     For each file in arrSaveFiles
+'         strSaveFile = strSaveLocation & file
+'         ' Rename .sav to backups
+'         If objFso.FileExists(strSaveFile) Then
+'             objFso.MoveFile strSaveFile, strSaveFile & arrSaveEndings(0)
+'         End If
+'         ' Rename backups to .sav
+'         If objFso.FileExists(strSaveFile & arrSaveEndings(1)) Then
+'             objFso.MoveFile strSaveFile & arrSaveEndings(1), strSaveFile
+'         End If
+'     Next
+' Else
+'     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
+' End If
 ' Done patching
 
 
