@@ -6,7 +6,7 @@ If Not WScript.Arguments.Named.Exists("elevate") Then
     WScript.Quit
 End If
 
-Dim strRegValue, strFolder, objFolder, strCupheadDir, strCupheadDataDir,_
+Dim strRegValue, strFolder, objFolder, strCupheadDataDir,_
     arrPatches, CurrentPatch, blnUnpatching, strPatchMessage, strSaveLocation,_
     strSaveFile, arrSaveFiles, arrSaveEndings, intOKCancel, file, BinaryData, strMD5
 Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
@@ -23,22 +23,28 @@ objWshShl.CurrentDirectory = objFso.GetParentFolderName(WScript.ScriptFullName)
 On Error Resume Next
 strRegValue = objWshShl.RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 268910\InstallLocation")
 On Error GoTo 0
+If Not objFso.FolderExists(strRegValue & "\Cuphead_Data\") Then
+    strRegValue = ""
+End If
 If len(strRegValue) = 0 or Err.Number <> 0 Then
     Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually.",0,17)
 
     If objFolder is Nothing Then
         Wscript.Quit()
     Else
-        If Not objFso.FolderExists(objFolder.Self.Path & "\Cuphead_Data\") Then
-            patcherError "Cuphead_Data not found!"
+        If Not objFso.FileExists(objFolder.Self.Path & "\Cuphead.exe") Then
+            If Not objFso.FileExists(objFolder.Self.Path & "\..\Cuphead.exe") Then
+		        patcherError "Cuphead executable not found!"
+            Else
+                strCupheadDataDir = objFolder.Self.Path & "\"
+            End If
         Else
-            strCupheadDir = objFolder.Self.Path
+            strCupheadDataDir = objFolder.Self.Path & "\Cuphead_Data\"
         End If
     End If
 Else
-    strCupheadDir = strRegValue
+    strCupheadDataDir = strRegValue & "\Cuphead_Data\"
 End If
-strCupheadDataDir = strCupheadDir & "\Cuphead_Data\"
 strSaveLocation = objWshShl.ExpandEnvironmentStrings("%APPDATA%") & "\Cuphead\"
 ' Got location
 
@@ -109,7 +115,7 @@ Next
 
 
 ' Last check before patching
-intOKCancel = MsgBox("Click OK to " & strPatchMessage & "patch" & vbCrLf & vbCrLf & "(" & strCupheadDir & ")", vbOKCancel, "CupCore Patcher")
+intOKCancel = MsgBox("Click OK to " & strPatchMessage & "patch" & vbCrLf & vbCrLf & "(" & strCupheadDataDir & ")", vbOKCancel, "CupCore Patcher")
 if intOKCancel = 2 Then
     WScript.Quit()
 End If
