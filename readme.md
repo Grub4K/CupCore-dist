@@ -6,7 +6,7 @@ A re-implementation of the Cuphead expert mode with all-new content.
   - Right-click Cuphead in steam library
   - Select Properties -> BETAS
   - Select the legacy-branch and click OK
-- Extract the release .zip file if you haven't already
+- Extract the [release](https://github.com/Grub4K/CupCore-dist/releases) file if you haven't already
 - From the extracted files run `Patcher.vbs`
 - If the patcher cannot find the Cuphead directory, select it manually
 - Hit OK on the confirmation dialogue
