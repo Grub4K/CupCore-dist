@@ -11,8 +11,10 @@ A re-implementation of the Cuphead expert mode with all-new content.
 - If the patcher cannot find the Cuphead directory, select it manually
 - Hit OK on the confirmation dialogue
   - The Patcher window will vanish for the patching time
-  - If CupCore is installed it will remove it instead
+  - **If CupCore is already installed, it will uninstall it**
 - A message will inform you when patching is done
+
+> NOTE: When uninstalled, any progress made in CupCore will be deleted and save files that were there before CupCore was installed will be restored.
 
 ## Bug report
 If you find a bug, please report it [here](https://github.com/Grub4K/CupCore-dist/issues)
