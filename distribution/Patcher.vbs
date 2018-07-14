@@ -36,9 +36,6 @@ Dim objStream : Set objStream = CreateObject("ADODB.Stream")
 Dim objElement : Set objElement = CreateObject("MSXML2.DOMDocument").CreateElement("tmp")
 objWshShl.CurrentDirectory = objFso.GetParentFolderName(WScript.ScriptFullName)
 
-WScript.Echo True
-WScript.Echo True & ""
-
 ' Check settings file first
 If Settings.Load Then
     ' Check if everything legit
