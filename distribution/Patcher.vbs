@@ -14,8 +14,11 @@ Const PATCHED = "PatchInstalled"
 Dim arrPatches : arrPatches = Array(_
     Array("Managed\Assembly-CSharp.dll",   "dc51ec25ceb570b88afc6df0ca1601a1"),_
     Array("sharedassets1.assets",          "bbd44f4eb1b9dbf62a858c807c5933b6"),_
+	Array("sharedassets2.assets",          "ec7f96b925a643f2f2f35fb06436e781"),_
     Array("sharedassets3.assets",          "cede5a9ee9e0af64057ba60dfec2a0ea"),_
-    Array("sharedassets10.assets",         "ff35ae46a3b9219e6e643ec50a9cf0cb") _
+    Array("sharedassets10.assets",         "ff35ae46a3b9219e6e643ec50a9cf0cb"),_
+	Array("sharedassets13.assets",          "d59795608681033dff90fada643f0f70"),_
+	Array("sharedassets17.assets",          "76cd1cd04e4a8ec5f12950a3f263aabe")_
 )
 ' Save file base name array
 Dim arrSaveFiles : arrSaveFiles = Array(_
