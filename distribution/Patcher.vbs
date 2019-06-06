@@ -290,9 +290,9 @@ Class XmlSettings
         If ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll" & ".bak") ) Then
             blnPatched = True
         ElseIf ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll") ) Then
-            ' Check for Current Patch
+            ' Check for 1.1
             If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
-                patcherError "Cuphead Current Patch detected! Please install the LEGACY version."
+                patcherError "Cuphead v1.1 detected! Please install the LEGACY version."
             End If
             blnPatched = False
         Else
