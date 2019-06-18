@@ -13,7 +13,7 @@ Const PATCHED = "PatchInstalled"
 ' Patching Array
 Dim arrPatches : arrPatches = Array(_
     Array("Managed\Assembly-CSharp.dll",   "dc51ec25ceb570b88afc6df0ca1601a1"),_
-	'Array("resources.assets", "0a9bfcfb4e3d58a476ba98d4a3511c9a"),_
+	Array("resources.assets", "0a9bfcfb4e3d58a476ba98d4a3511c9a"),_
     Array("sharedassets1.assets",          "bbd44f4eb1b9dbf62a858c807c5933b6"),_
 	Array("sharedassets2.assets",          "ec7f96b925a643f2f2f35fb06436e781"),_
     Array("sharedassets3.assets",          "cede5a9ee9e0af64057ba60dfec2a0ea"),_
