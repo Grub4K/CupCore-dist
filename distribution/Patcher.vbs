@@ -21,6 +21,7 @@ Dim arrPatches : arrPatches = Array(_
 	Array("sharedassets13.assets",          "d59795608681033dff90fada643f0f70"),_
 	Array("sharedassets34.assets", "4ec8182652c5aa22b5582a1c1dd45ac5"),_
 	Array("sharedassets57.assets",          "0a198c15e0e68acc3e42eed45b948702"),_
+	Array("level57",          "ce8681b50fbeb85662e484e8fbb4a42f"),_
 	Array("sharedassets17.assets",          "76cd1cd04e4a8ec5f12950a3f263aabe")_
 )
 ' Save file base name array
