@@ -2,7 +2,7 @@
 A re-implementation of the Cuphead expert mode with all-new content.
 
 ## Installation / Uninstallation
-- Downgrade you game to be LEGACY
+- Downgrade your game to be LEGACY
   - Right-click Cuphead in steam library
   - Select Properties -> BETAS
   - Select the legacy-branch and click OK
