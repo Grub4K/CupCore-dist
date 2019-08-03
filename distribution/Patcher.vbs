@@ -6,10 +6,13 @@ If Not WScript.Arguments.Named.Exists("elevate") Then
     WScript.Quit
 End If
 
-' Global constants for XML file
-Const SETTINGS_PATH = "settings.xml"
+
+' Global constants for XML file, SETTINS_PATH for some reason must be a variable
+Dim SETTINGS_PATH
+SETTINGS_PATH = CreateObject("WScript.Shell").ExpandEnvironmentStrings("%APPDATA%") & "\cupcore_settings.xml"
 Const CUPHEAD_PATH = "CupheadPath"
 Const PATCHED = "PatchInstalled"
+
 ' Patching Array
 Dim arrPatches : arrPatches = Array(_
     Array("Managed\Assembly-CSharp.dll",   "dc51ec25ceb570b88afc6df0ca1601a1"),_
@@ -43,6 +46,7 @@ Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
 Dim objMD5:  Set objMD5 = CreateObject("System.Security.Cryptography.MD5CryptoServiceProvider")
 Dim objStream : Set objStream = CreateObject("ADODB.Stream")
 Dim objElement : Set objElement = CreateObject("MSXML2.DOMDocument").CreateElement("tmp")
+
 objWshShl.CurrentDirectory = objFso.GetParentFolderName(WScript.ScriptFullName)
 
 ' Check settings file first
@@ -122,11 +126,9 @@ If objFso.FolderExists(strSaveLocation) Then
     For each file in arrSaveFiles
         strSaveFile = strSaveLocation & file
         If (Settings.Patched) Then
-            If objFso.FileExists(strSaveFile) Then
-                objFso.DeleteFile strSaveFile
-            End If
             If objFso.FileExists(strSaveFile & ".bak") Then
-                objFso.MoveFile strSaveFile & ".bak", strSaveFile
+                objFso.CopyFile strSaveFile & ".bak", strSaveFile
+                objFso.DeleteFile strSaveFile & ".bak"
             End If
         Else
             If objFso.FileExists(strSaveFile) Then
@@ -278,7 +280,7 @@ Class XmlSettings
             ' Check for 1.1
             If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
                 patcherError "Cuphead v1.1 detected! Please install the LEGACY version."
-            ElseIf verifyMd5("bdebd14be8a36c516c37d7930697d185", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
+    ElseIf verifyMd5("bdebd14be8a36c516c37d7930697d185", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
                 patcherError "Cuphead v1.2 detected! Please install the LEGACY version."
             End If
             blnPatched = False
