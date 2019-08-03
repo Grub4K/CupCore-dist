@@ -13,17 +13,19 @@ Const PATCHED = "PatchInstalled"
 ' Patching Array
 Dim arrPatches : arrPatches = Array(_
     Array("Managed\Assembly-CSharp.dll",   "dc51ec25ceb570b88afc6df0ca1601a1"),_
-	Array("resources.assets", "0a9bfcfb4e3d58a476ba98d4a3511c9a"),_
+    Array("resources.assets",              "0a9bfcfb4e3d58a476ba98d4a3511c9a"),_
     Array("sharedassets1.assets",          "bbd44f4eb1b9dbf62a858c807c5933b6"),_
-	Array("sharedassets2.assets",          "ec7f96b925a643f2f2f35fb06436e781"),_
+    Array("sharedassets2.assets",          "ec7f96b925a643f2f2f35fb06436e781"),_
     Array("sharedassets3.assets",          "cede5a9ee9e0af64057ba60dfec2a0ea"),_
     Array("sharedassets10.assets",         "ff35ae46a3b9219e6e643ec50a9cf0cb"),_
-	Array("sharedassets13.assets",          "d59795608681033dff90fada643f0f70"),_
-	Array("sharedassets34.assets", "4ec8182652c5aa22b5582a1c1dd45ac5"),_
-	'Array("sharedassets57.assets",          "0a198c15e0e68acc3e42eed45b948702"),_
-	'Array("level57",          "ce8681b50fbeb85662e484e8fbb4a42f"),_
-	Array("sharedassets17.assets",          "76cd1cd04e4a8ec5f12950a3f263aabe")_
+    Array("sharedassets13.assets",         "d59795608681033dff90fada643f0f70"),_
+    Array("sharedassets34.assets",         "4ec8182652c5aa22b5582a1c1dd45ac5"),_
+    Array("sharedassets17.assets",         "76cd1cd04e4a8ec5f12950a3f263aabe") _
 )
+' Unused MD5
+'    Array("sharedassets57.assets",         "0a198c15e0e68acc3e42eed45b948702"),_
+'    Array("level57",                       "ce8681b50fbeb85662e484e8fbb4a42f"),_
+
 ' Save file base name array
 Dim arrSaveFiles : arrSaveFiles = Array(_
     "cuphead_player_data_v1_slot_0.sav",_
@@ -82,10 +84,8 @@ Else
 End If
 If Settings.Patched Then
     strPatchMessage = "un"
-    arrSaveEndings = Array(".core", ".bak")
 Else
     strPatchMessage = ""
-    arrSaveEndings = Array(".bak", ".core")
 End If
 strSaveLocation = objWshShl.ExpandEnvironmentStrings("%APPDATA%") & "\Cuphead\"
 ' Got locations
@@ -137,25 +137,6 @@ If objFso.FolderExists(strSaveLocation) Then
 Else
     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
 End If
-'''''''''
-' Old code
-' If objFso.FolderExists(strSaveLocation) Then
-'     For each file in arrSaveFiles
-'         strSaveFile = strSaveLocation & file
-'         ' Rename .sav to backups
-'         If objFso.FileExists(strSaveFile) Then
-'             objFso.MoveFile strSaveFile, strSaveFile & arrSaveEndings(0)
-'         End If
-'         ' Rename backups to .sav
-'         If objFso.FileExists(strSaveFile & arrSaveEndings(1)) Then
-'             objFso.MoveFile strSaveFile & arrSaveEndings(1), strSaveFile
-'         End If
-'     Next
-' Else
-'     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
-' End If
-
-
 
 ' Change Patched variable and save
 Settings.Patched = not Settings.Patched
@@ -174,8 +155,8 @@ Function patcherError(message)
 End Function
 
 Function verifyMd5(hash, filepath)
-	' get binary data
-	objStream.Type = 1
+    ' get binary data
+    objStream.Type = 1
     objStream.Open
     objStream.LoadFromFile filepath
     BinaryData = objStream.Read
@@ -297,7 +278,7 @@ Class XmlSettings
             ' Check for 1.1
             If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
                 patcherError "Cuphead v1.1 detected! Please install the LEGACY version."
-			ElseIf verifyMd5("bdebd14be8a36c516c37d7930697d185", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
+            ElseIf verifyMd5("bdebd14be8a36c516c37d7930697d185", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
                 patcherError "Cuphead v1.2 detected! Please install the LEGACY version."
             End If
             blnPatched = False
