@@ -1,5 +1,5 @@
 # CupCore
-A re-implementation of the Cuphead expert mode with all-new content.
+A re-implementation of the Cuphead expert mode with all-new content. https://grub4k.github.io/CupCore-dist/
 
 ## Installation / Uninstallation
 - Uninstall any previous versions of CupCore
