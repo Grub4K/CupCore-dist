@@ -21,9 +21,14 @@ Dim arrPatches : arrPatches = Array(_
     Array("sharedassets2.assets",          "ec7f96b925a643f2f2f35fb06436e781"),_
     Array("sharedassets3.assets",          "cede5a9ee9e0af64057ba60dfec2a0ea"),_
     Array("sharedassets10.assets",         "ff35ae46a3b9219e6e643ec50a9cf0cb"),_
+    Array("sharedassets11.assets",         "4ab34aa25ea39d4ba8e6681664c32ea4"),_
     Array("sharedassets13.assets",         "d59795608681033dff90fada643f0f70"),_
+    Array("sharedassets17.assets",         "76cd1cd04e4a8ec5f12950a3f263aabe"),_
+    Array("sharedassets24.assets",         "10abb5ae2e90490502a4b7f2ebf18947"),_
+    Array("sharedassets32.assets",         "006900b13f5428bea7c2647046cd2cc8"),_
     Array("sharedassets34.assets",         "4ec8182652c5aa22b5582a1c1dd45ac5"),_
-    Array("sharedassets17.assets",         "76cd1cd04e4a8ec5f12950a3f263aabe") _
+    Array("sharedassets38.assets",         "e36836fa30eb617e45b44d5a2d5eefca"),_
+    Array("sharedassets40.assets",         "ef9e39864626bf21c2a8ec5de85dade3")_  
 )
 ' Unused MD5
 '    Array("sharedassets57.assets",         "0a198c15e0e68acc3e42eed45b948702"),_
