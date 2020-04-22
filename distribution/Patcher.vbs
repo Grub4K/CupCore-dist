@@ -6,14 +6,14 @@ If Not WScript.Arguments.Named.Exists("elevate") Then
     WScript.Quit
 End If
 
-Const ALLOW_EASY = False
-
 
 ' Global constants for XML file, SETTINS_PATH for some reason must be a variable
 Dim SETTINGS_PATH
 SETTINGS_PATH = CreateObject("WScript.Shell").ExpandEnvironmentStrings("%APPDATA%") & "\cupcore_settings.xml"
 Const CUPHEAD_PATH = "CupheadPath"
 Const PATCHED = "PatchInstalled"
+Const ALLOW_EASY = False
+Const SAVE_FILE_AMT = 3
 
 ' Patching Array
 Dim arrPatches : arrPatches = Array(_
@@ -141,23 +141,26 @@ If objFso.FolderExists(strSaveLocation) Then
             If objFso.FileExists(strSaveFile) Then
             	' backup and delete original saves
                 objFso.CopyFile strSaveFile, strSaveFile & ".bak"
-                objFso.DeleteFile strSaveFile
             End If
         End If
     Next
     
-    If Not Settings.Patched And ALLOW_EASY Then
-    	If MsgBox("Click YES to start a new game or NO for free play (noob).", vbYesNo, "CupCore Patcher") = 7 Then
-    		' check for 200% save file
-			If (NOT objFso.FileExists("data\save\cuphead_player_data_v1_slot_0.sav")) Then
-    			MsgBox "Could not locate save file. Creating new game.", vbOKOnly, "Error"
-   			Else
-   				Dim intCounter
-   				For intCounter = 0 To 2
-   					objFso.CopyFile "data\save\cuphead_player_data_v1_slot_" & intCounter & ".sav", strSaveLocation & "cuphead_player_data_v1_slot_" & intCounter & ".sav"
-   				Next
+    If Not Settings.Patched Then
+    	Dim intCounter
+    	For intCounter = 0 To (SAVE_FILE_AMT - 1)
+    		objFso.CopyFile "data\save\blank.sav", strSaveLocation & "cuphead_player_data_v1_slot_" & intCounter & ".sav"
+    	Next
+    	
+    	If ALLOW_EASY Then
+    		If MsgBox("Click YES to start a new game or NO for free play (noob).", vbYesNo, "CupCore Patcher") = 7 Then
+    			' check for 200% save file
+				If (NOT objFso.FileExists("data\save\cuphead_player_data_v1_slot_0.sav")) Then
+    				MsgBox "Could not locate save file. Creating new game.", vbOKOnly, "Error"
+   				Else
+   					objFso.CopyFile "data\save\complete.sav", strSaveLocation & "cuphead_player_data_v1_slot_0.sav"
+				End If
 			End If
-		End If
+    	End If
     End If
 Else
     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
