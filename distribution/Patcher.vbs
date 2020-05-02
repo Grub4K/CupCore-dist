@@ -29,6 +29,7 @@ Dim arrPatches : arrPatches = Array(_
     Array("sharedassets24.assets",         "10abb5ae2e90490502a4b7f2ebf18947"),_
     Array("sharedassets32.assets",         "006900b13f5428bea7c2647046cd2cc8"),_
     Array("sharedassets34.assets",         "4ec8182652c5aa22b5582a1c1dd45ac5"),_
+    Array("sharedassets37.assets",         "3cd2066715eb478bf35953df3f2da8a1"),_
     Array("sharedassets38.assets",         "e36836fa30eb617e45b44d5a2d5eefca"),_
     Array("sharedassets40.assets",         "ef9e39864626bf21c2a8ec5de85dade3")_  
 )
