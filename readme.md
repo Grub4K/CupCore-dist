@@ -14,6 +14,7 @@ A re-implementation of the Cuphead expert mode with all-new content. https://gru
   - The Patcher window will vanish for the patching time
   - **If CupCore is already installed, it will uninstall it**
 - A message will inform you when patching is done
+- If you get a message from Steam asking about syncing files, select "UPLOAD TO STEAM CLOUD"
 
 > NOTE: When uninstalled, CupCore saves will be deleted and original saves will be restored.
 
