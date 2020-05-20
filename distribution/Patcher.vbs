@@ -153,7 +153,7 @@ If objFso.FolderExists(strSaveLocation) Then
     	Next
     	
     	If ALLOW_EASY Then
-    		If MsgBox("Click YES to start a new game or NO for free play (noob).", vbYesNo, "CupCore Patcher") = 7 Then
+			If MsgBox("Click YES to start a new game or NO for free play (for beginners).", vbYesNo, "CupCore Patcher") = 7 Then
     			' check for 200% save file
 				If (NOT objFso.FileExists("data\save\complete.sav")) Then
     				MsgBox "Could not locate save file. Creating new game.", vbOKOnly, "Error"
