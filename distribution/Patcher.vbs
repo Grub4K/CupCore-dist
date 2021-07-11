@@ -280,7 +280,7 @@ Class XmlSettings
             strRegValue = ""
         End If
         If len(strRegValue) = 0 or Err.Number <> 0 Then
-            Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select location manually.",0,17)
+			Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select install location manually. (\steamapps\common\Cuphead\Cuphead_Data)",0,17)
 
             If objFolder is Nothing Then
                 Wscript.Quit()
