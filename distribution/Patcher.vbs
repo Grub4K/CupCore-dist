@@ -307,9 +307,9 @@ Class XmlSettings
         ElseIf ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll") ) Then
             ' Check for 1.1
             If verifyMd5("e39a8a234edb59c07087a829de4fac34", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
-                patcherError "Cuphead v1.1 detected! Please install the LEGACY version."
+				patcherError "Cuphead v1.1 detected! Please install the LEGACY No patches version."
             ElseIf verifyMd5("bdebd14be8a36c516c37d7930697d185", strCupheadPath & "Managed\Assembly-CSharp.dll") Then
-                patcherError "Cuphead v1.2 detected! Please install the LEGACY version."
+				patcherError "Cuphead v1.2 detected! Please install the LEGACY No patches version."
             End If
             blnPatched = False
         Else
