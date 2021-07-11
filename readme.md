@@ -5,10 +5,10 @@ A re-implementation of the Cuphead expert mode with all-new content. https://gru
 
 ## Installation / Uninstallation
 - Uninstall any previous versions of CupCore
-- Downgrade your game to be LEGACY
+- Downgrade your game to be LEGACY - No patches
   - Right-click Cuphead in steam library
   - Select Properties -> BETAS
-  - Select the legacy-branch and click OK
+  - Select the legacy No patches-branch and click OK
 - Extract the [release](https://github.com/Grub4K/CupCore-dist/releases) file if you haven't already
 - From the extracted files run `Patcher.vbs`
 - If the patcher cannot find the Cuphead directory, select it manually
