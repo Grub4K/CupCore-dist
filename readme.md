@@ -23,7 +23,7 @@ A re-implementation of the Cuphead expert mode with all-new content. https://gru
 
 > NOTE: When uninstalled, CupCore saves will be deleted and original saves will be restored.
 
-**Player loadout can be emptied with `Control + E`.
+**Player loadout can be emptied with `Control + E`.**
 
 ## Bug report
 If you find a bug, please report it [here](https://github.com/Grub4K/CupCore-dist/issues).
