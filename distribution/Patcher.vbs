@@ -1,11 +1,13 @@
+' CupCore Patcher Script For Steam
+
 Option Explicit
 
+' elevate
 If Not WScript.Arguments.Named.Exists("elevate") Then
     CreateObject("Shell.Application").ShellExecute WScript.FullName _
       , """" & WScript.ScriptFullName & """ /elevate", "", "runas", 1
     WScript.Quit
 End If
-
 
 ' Global constants for XML file, SETTINS_PATH for some reason must be a variable
 Dim SETTINGS_PATH
@@ -34,6 +36,7 @@ Dim arrPatches : arrPatches = Array(_
     Array("sharedassets38.assets",         "e36836fa30eb617e45b44d5a2d5eefca"),_
     Array("sharedassets40.assets",         "ef9e39864626bf21c2a8ec5de85dade3")_  
 )
+
 ' Unused MD5
 '    Array("sharedassets57.assets",         "0a198c15e0e68acc3e42eed45b948702"),_
 '    Array("level57",                       "ce8681b50fbeb85662e484e8fbb4a42f"),_
@@ -56,6 +59,7 @@ Dim objMD5:  Set objMD5 = CreateObject("System.Security.Cryptography.MD5CryptoSe
 Dim objStream : Set objStream = CreateObject("ADODB.Stream")
 Dim objElement : Set objElement = CreateObject("MSXML2.DOMDocument").CreateElement("tmp")
 
+' Make sure script is running in current directory
 objWshShl.CurrentDirectory = objFso.GetParentFolderName(WScript.ScriptFullName)
 
 ' Check settings file first
@@ -280,7 +284,7 @@ Class XmlSettings
             strRegValue = ""
         End If
         If len(strRegValue) = 0 or Err.Number <> 0 Then
-			Set objFolder = objShl.BrowseForFolder(0,"Cuphead not found, please select install location manually. (\steamapps\common\Cuphead\Cuphead_Data)",0,17)
+			Set objFolder = objShl.BrowseForFolder(0, "Please select install location for Cuphead. eg. (C:\Program Files (x86)\Steam\steamapps\common\Cuphead)",0, 17)
 
             If objFolder is Nothing Then
                 Wscript.Quit()
@@ -332,23 +336,27 @@ Class XmlSettings
             ' Check delta files
             If NOT objFso.FileExists("data\" & file(0) & ".xdelta") Then
                 Err.Raise 1,, "Could not locate ""data\" & file(0) & ".xdelta"""
+                Exit For
             End If
             ' Check Cuphead files
             CurrentFile = Settings.CupheadLocation & file(0)
+            ' Lethal file not found, cannot patch or unpatch
+            If NOT objFso.FileExists(CurrentFile) Then
+                Err.Raise 4,, "Could not locate """ & file(0) & """" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+                Exit For
+            End If
             If Settings.Patched Then
                 ' For unpatching we need the backup
                 If NOT objFso.FileExists(CurrentFile & ".bak") Then
                     Err.Raise 2,, "Could not locate """ & file(0) & ".bak""" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+                    Exit For
                 End If
             Else
                 ' Verifying md5, since xdelta will throw an error if file not matching
                 If NOT verifyMd5( file(1), CurrentFile ) Then
                     Err.Raise 3,, "Could not verify """ & file(0) & """" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+                    Exit For
                 End If
-            End If
-            ' Lethal file not found, cannot patch
-            If NOT objFso.FileExists(CurrentFile) Then
-                Err.Raise 4,, "Could not locate """ & file(0) & """" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
             End If
         Next
     End Sub
