@@ -1,8 +1,6 @@
 # CupCore
 A re-implementation of the Cuphead expert mode with all-new content. https://grub4k.github.io/CupCore-dist/
 
->NOTE: Actual development repository is private, please contact xp4xboxgithub@gmail.com for read access.
-
 ## Installation / Uninstallation
 
 > NOTE: Only Steam versions of the game are currently supported.
