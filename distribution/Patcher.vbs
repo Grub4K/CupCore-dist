@@ -95,9 +95,10 @@ Else
     If Err.Number <> 0 Then
         ' Raise Error, quit
         patcherError Err.Description
+    Else 
+    	' Save new settings
+    	Settings.Save
     End If
-    ' Save new settings
-    Settings.Save
 End If
 If Settings.Patched Then
     strPatchMessage = "un"
