@@ -124,14 +124,14 @@ for each file in arrPatches
     ' If flag is set we are unpatching
     If Settings.Patched Then
         objFso.DeleteFile CurrentFile
-        objFso.MoveFile CurrentFile & ".bak", CurrentFile
+        objFso.MoveFile CurrentFile & ".cupcorebak", CurrentFile
     Else
         ' Check for external manipulation
-        If objFso.FileExists(CurrentFile & ".bak") Then
-            objFso.DeleteFile CurrentFile & ".bak"
+        If objFso.FileExists(CurrentFile & ".cupcorebak") Then
+            objFso.DeleteFile CurrentFile & ".cupcorebak"
         End If
-        objFso.MoveFile CurrentFile, CurrentFile & ".bak"
-        objWshShl.Run "data\xdelta3 -d -s """ & CurrentFile & ".bak"" ""data\" & file(0) & ".xdelta"" """ & CurrentFile & """", 0, True
+        objFso.MoveFile CurrentFile, CurrentFile & ".cupcorebak"
+        objWshShl.Run "data\xdelta3 -d -s """ & CurrentFile & ".cupcorebak"" ""data\" & file(0) & ".xdelta"" """ & CurrentFile & """", 0, True
     End If
 Next
 ' Backup save files
@@ -139,14 +139,14 @@ If objFso.FolderExists(strSaveLocation) Then
     For each file in arrSaveFiles
         strSaveFile = strSaveLocation & file
         If (Settings.Patched) Then
-            If objFso.FileExists(strSaveFile & ".bak") Then
-                objFso.CopyFile strSaveFile & ".bak", strSaveFile
-                objFso.DeleteFile strSaveFile & ".bak"
+            If objFso.FileExists(strSaveFile & ".cupcorebak") Then
+                objFso.CopyFile strSaveFile & ".cupcorebak", strSaveFile
+                objFso.DeleteFile strSaveFile & ".cupcorebak"
             End If
         Else
             If objFso.FileExists(strSaveFile) Then
             	' backup and delete original saves
-                objFso.CopyFile strSaveFile, strSaveFile & ".bak"
+                objFso.CopyFile strSaveFile, strSaveFile & ".cupcorebak"
             End If
         End If
     Next
@@ -306,7 +306,7 @@ Class XmlSettings
 
     Public Sub GetPatched
         ' Check Assembly-CSharp.dll as significant file
-        If ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll" & ".bak") ) Then
+        If ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll" & ".cupcorebak") ) Then
             blnPatched = True
         ElseIf ( objFso.FileExists(strCupheadPath & "Managed\Assembly-CSharp.dll") ) Then
             ' Check for 1.1
@@ -347,8 +347,8 @@ Class XmlSettings
             End If
             If Settings.Patched Then
                 ' For unpatching we need the backup
-                If NOT objFso.FileExists(CurrentFile & ".bak") Then
-                    Err.Raise 2,, "Could not locate """ & file(0) & ".bak""" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
+                If NOT objFso.FileExists(CurrentFile & ".cupcorebak") Then
+                    Err.Raise 2,, "Could not locate """ & file(0) & ".cupcorebak""" & vbCrLf & vbCrLf & "Please reinstall Cuphead"
                     Exit For
                 End If
             Else
