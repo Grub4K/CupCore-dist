@@ -139,6 +139,10 @@ If objFso.FolderExists(strSaveLocation) Then
     For each file in arrSaveFiles
         strSaveFile = strSaveLocation & file
         If (Settings.Patched) Then
+        	If objFso.FileExists(strSaveFile) Then
+        		objFso.CopyFile strSaveFile, strSaveFile & ".cupcoresave"
+        	End If
+        
             If objFso.FileExists(strSaveFile & ".cupcorebak") Then
                 objFso.CopyFile strSaveFile & ".cupcorebak", strSaveFile
                 objFso.DeleteFile strSaveFile & ".cupcorebak"
@@ -148,25 +152,25 @@ If objFso.FolderExists(strSaveLocation) Then
             	' backup and delete original saves
                 objFso.CopyFile strSaveFile, strSaveFile & ".cupcorebak"
             End If
+            
+            If objFso.FileExists(strSaveFile & ".cupcoresave") Then
+            	objFso.CopyFile strSaveFile & ".cupcoresave", strSaveFile
+            	objFso.DeleteFile strSaveFile & ".cupcoresave"
+            ElseIf objFso.FileExists("data\save\blank.sav") Then
+            	objFso.CopyFile "data\save\blank.sav", strSaveLocation & "cuphead_player_data_v1_slot_" & Mid(file, Len(file) - 4, 1) & ".sav"
+            End If
         End If
     Next
     
-    If Not Settings.Patched And objFso.FileExists("data\save\blank.sav") Then
-    	Dim intCounter
-    	For intCounter = 0 To (SAVE_FILE_AMT - 1)
-    		objFso.CopyFile "data\save\blank.sav", strSaveLocation & "cuphead_player_data_v1_slot_" & intCounter & ".sav"
-    	Next
-    	
-    	If ALLOW_EASY Then
-			If MsgBox("Click YES to start a new game or NO for free play (for beginners).", vbYesNo, "CupCore Patcher") = 7 Then
-    			' check for 200% save file
-				If (NOT objFso.FileExists("data\save\complete.sav")) Then
-    				MsgBox "Could not locate save file. Creating new game.", vbOKOnly, "Error"
-   				Else
-   					objFso.CopyFile "data\save\complete.sav", strSaveLocation & "cuphead_player_data_v1_slot_0.sav"
-				End If
+    If Not Settings.Patched And ALLOW_EASY Then
+		If MsgBox("Click YES to start a new game or NO for free play (for beginners).", vbYesNo, "CupCore Patcher") = 7 Then
+    		' check for 200% save file
+			If (NOT objFso.FileExists("data\save\complete.sav")) Then
+    			MsgBox "Could not locate save file. Creating new game.", vbOKOnly, "Error"
+   			Else
+   				objFso.CopyFile "data\save\complete.sav", strSaveLocation & "cuphead_player_data_v1_slot_0.sav"
 			End If
-    	End If
+		End If
     End If
 Else
     MsgBox "Saves could not be located, backups were not created", 32, "CupCore Patcher"
